@@ -8,7 +8,7 @@ package com.slslabs.viewer {
 	 * Application Facade.
 	 *
 	 * @langversion ActionScript 3.0
-	 * @author ${author.name}  <${author.email}>
+	 * @author Greg Jastrab &lt;greg&#64;smartlogicsolutions.com&gt;
 	 * @date 03/02/2009
 	 * @version 0.1
 	 */

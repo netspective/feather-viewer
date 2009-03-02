@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+                xmlns:components="com.slslabs.viewer.view.components.*"
                 creationComplete="facade.startup(this)">
 
 	<mx:Script>
@@ -9,5 +10,11 @@
 			private var facade:ViewerFacade = ViewerFacade.getInstance();
 		]]>
 	</mx:Script>
+	
+	<mx:Style source="viewer.css" />
+	
+	<components:ViewerToolbar id="toolbar" dock="true" />
+	
+	<mx:SWFLoader id="loader" />
 
 </mx:Application>

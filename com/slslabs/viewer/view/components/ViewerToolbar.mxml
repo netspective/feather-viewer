@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:ApplicationControlBar xmlns:mx="http://www.adobe.com/2006/mxml">
+	
+	<mx:ButtonBar id="zoomBar" width="56" height="27">
+		<mx:dataProvider>
+			<mx:Object icon="@Embed(skinClass='Button_minus')" type="zoomOut" />
+			<mx:Object icon="@Embed(skinClass='Button_plus')" type="zoomIn" />
+		</mx:dataProvider>
+	</mx:ButtonBar>
+	
+</mx:ApplicationControlBar>

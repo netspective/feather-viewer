@@ -1,0 +1,9 @@
+Application {
+	background-gradient-alphas: 1, 1;
+	background-gradient-colors: #3d3d3d, #2c2c2c;
+}
+
+ViewerToolbar {
+	fill-alphas: 1, 1;
+	fill-colors: #dfdfdf, #cfcfcf;
+}
