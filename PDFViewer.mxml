@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+                creationComplete="facade.startup(this)">
+
+	<mx:Script>
+		<![CDATA[
+			import com.slslabs.viewer.ViewerFacade;
+
+			private var facade:ViewerFacade = ViewerFacade.getInstance();
+		]]>
+	</mx:Script>
+
+</mx:Application>
