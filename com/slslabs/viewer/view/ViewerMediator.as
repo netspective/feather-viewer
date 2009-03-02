@@ -2,9 +2,12 @@ package com.slslabs.viewer.view {
 	
 	import com.slslabs.viewer.ViewerFacade;
 	
+	import flash.display.AVM1Movie;
 	import flash.display.LoaderInfo;
 	import flash.display.MovieClip;
 	import flash.events.Event;
+	
+	import mx.controls.Alert;
 	
 	import org.puremvc.as3.core.View;
 	import org.puremvc.as3.interfaces.INotification;
@@ -24,6 +27,11 @@ package com.slslabs.viewer.view {
 		
 		public static const NAME:String = "ViewerMediator";
 		
+		/**
+		 * Indicates the loaded movie may be navigated.
+		 */
+		protected var canNavMovie:Boolean;
+		
 		/* === Variables === */
 		
 		/* --- Constructor --- */
@@ -35,6 +43,7 @@ package com.slslabs.viewer.view {
 		 */
 		public function ViewerMediator(viewComponent:Object) {
 			super(NAME, viewComponent);
+			canNavMovie = false;
 			
 			facade.registerMediator( new ViewerToolbarMediator(app.toolbar) );
 			
@@ -48,9 +57,11 @@ package com.slslabs.viewer.view {
 		override public function handleNotification(note:INotification):void {
 			switch( note.getName() ) {
 				case ViewerFacade.CHANGE_PAGE:
-					note.getBody().goForward ? swfAsMovieClip.nextFrame() : swfAsMovieClip.prevFrame();
-					sendNotification(ViewerFacade.UPDATE_PAGES,
-						{currentPage: swfAsMovieClip.currentFrame, totalPages: swfAsMovieClip.totalFrames});
+					if(canNavMovie) {
+						note.getBody().goForward ? swfAsMovieClip.nextFrame() : swfAsMovieClip.prevFrame();
+						sendNotification(ViewerFacade.UPDATE_PAGES,
+							{currentPage: swfAsMovieClip.currentFrame, totalPages: swfAsMovieClip.totalFrames});
+					}
 					break;
 			}
 		}
@@ -67,9 +78,15 @@ package com.slslabs.viewer.view {
 		
 		private function onSWFInit(evt:Event):void {
 			var info:LoaderInfo = app.loader.loaderInfo;
+			canNavMovie = false;
+			
 			if(app.loader.content is MovieClip) {
+				canNavMovie = true;
 				swfAsMovieClip.gotoAndStop(1);
 				sendNotification(ViewerFacade.SWF_FRAME_DATA, swfAsMovieClip.totalFrames);
+			}
+			else if(app.loader.content is AVM1Movie) {
+				Alert.show("SWFs loaded must be Flash 9 or later.  Flash 8 and earlier SWFs cannot be controlled.", "Incompatible SWF", Alert.OK);
 			}
 		}
 		
