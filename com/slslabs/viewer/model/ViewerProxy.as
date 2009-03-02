@@ -19,6 +19,11 @@ package com.slslabs.viewer.model {
 		public static const NAME:String = "ViewerProxy";
 		
 		/**
+		 * # of frames in the loaded SWF.
+		 */
+		public var numFrames:uint;
+		
+		/**
 		 * Path from which to load the SWF.
 		 */
 		public var swfPath:String;
@@ -34,6 +39,7 @@ package com.slslabs.viewer.model {
 		 */
 		public function ViewerProxy() {
 			super(NAME);
+			numFrames = 0;
 			swfPath = "";
 		}
 		

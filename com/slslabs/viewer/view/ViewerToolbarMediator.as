@@ -3,6 +3,8 @@ package com.slslabs.viewer.view {
 	import com.slslabs.viewer.ViewerFacade;
 	import com.slslabs.viewer.view.components.ViewerToolbar;
 	
+	import flash.events.MouseEvent;
+	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
@@ -31,6 +33,8 @@ package com.slslabs.viewer.view {
 		 */
 		public function ViewerToolbarMediator(viewComponent:Object) {
 			super(NAME, viewComponent);
+			
+			view.addEventListener(MouseEvent.CLICK, onClick);
 		}
 		
 		/* === Constructor === */
@@ -38,14 +42,37 @@ package com.slslabs.viewer.view {
 		/* --- Functions --- */
 		
 		override public function handleNotification(note:INotification):void {
+			switch( note.getName() ) {
+				case ViewerFacade.UPDATE_PAGES:
+					updatePagesLabel(note.getBody().currentPage, note.getBody().totalPages);
+					break;
+			}
 		}
 
 		override public function listNotificationInterests():Array {
 			return [
+				ViewerFacade.UPDATE_PAGES
 			];
 		}
 		
+		public function updatePagesLabel(currentPage:uint, totalPages:uint):void {
+			view.pagesLbl.text = currentPage + "/" + totalPages;
+		}
+		
 		/* === Functions === */
+		
+		/* --- Event Handlers --- */
+		
+		private function onClick(evt:MouseEvent):void {
+			switch(evt.target) {
+				case view.backBtn:
+				case view.fwdBtn:
+					sendNotification(ViewerFacade.CHANGE_PAGE, {goForward: evt.target == view.fwdBtn});
+					break;
+			}
+		}
+		
+		/* === Event Handlers === */
 		
 		/* --- Public Accessors --- */
 		

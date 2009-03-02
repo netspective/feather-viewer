@@ -8,4 +8,18 @@
 		</mx:dataProvider>
 	</mx:ButtonBar>
 	
+	<mx:Spacer width="5" />
+	
+	<mx:VRule height="27" />
+	
+	<mx:Spacer width="5" />
+	
+	<mx:Button id="backBtn" styleName="backBtn" width="28" height="27" />
+	
+	<mx:Label id="pagesLbl" styleName="pagesLbl" text="0/0" />
+	
+	<mx:Button id="fwdBtn" styleName="fwdBtn" width="28" height="27" />
+	
+	<mx:Spacer width="100%" />
+	
 </mx:ApplicationControlBar>

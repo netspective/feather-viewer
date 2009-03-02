@@ -17,8 +17,14 @@ package com.slslabs.viewer {
 		/* --- Variables --- */
 		
 		public static const STARTUP:String = "startup";
+		
+		public static const CHANGE_PAGE:String = "changePage";
 
-		//pmvcgen:varconsts
+		public static const SWF_FRAME_DATA:String = "swfFrameData";
+		
+		public static const SWF_LOADED:String = "swfLoaded";
+		
+		public static const UPDATE_PAGES:String = "updatePages";
 		
 		/* === Variables === */
 		
@@ -42,7 +48,7 @@ package com.slslabs.viewer {
 		override protected function initializeController():void {
 			super.initializeController();
 			registerCommand(STARTUP, StartupCommand);
-	        //pmvcgen:register commands
+	        registerCommand(SWF_FRAME_DATA, SetSWFFrameDataCommand);
 		}
 		
 		/* === Functions === */
