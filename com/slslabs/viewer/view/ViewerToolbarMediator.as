@@ -5,6 +5,8 @@ package com.slslabs.viewer.view {
 	
 	import flash.events.MouseEvent;
 	
+	import mx.events.ItemClickEvent;
+	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
@@ -35,6 +37,7 @@ package com.slslabs.viewer.view {
 			super(NAME, viewComponent);
 			
 			view.addEventListener(MouseEvent.CLICK, onClick);
+			view.zoomBar.addEventListener(ItemClickEvent.ITEM_CLICK, onItemClick);
 		}
 		
 		/* === Constructor === */
@@ -70,6 +73,10 @@ package com.slslabs.viewer.view {
 					sendNotification(ViewerFacade.CHANGE_PAGE, {goForward: evt.target == view.fwdBtn});
 					break;
 			}
+		}
+		
+		private function onItemClick(evt:ItemClickEvent):void {
+			sendNotification(evt.item.type);
 		}
 		
 		/* === Event Handlers === */

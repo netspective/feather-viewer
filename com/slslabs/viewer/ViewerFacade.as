@@ -26,6 +26,12 @@ package com.slslabs.viewer {
 		
 		public static const UPDATE_PAGES:String = "updatePages";
 		
+		public static const ZOOM_IN:String = "zoomIn";
+		
+		public static const ZOOM_OUT:String = "zoomOut";
+		
+		public static const DEFAULT_ZOOM_STEP:Number = 0.1;
+
 		/* === Variables === */
 		
 		/* --- Functions --- */
@@ -49,6 +55,8 @@ package com.slslabs.viewer {
 			super.initializeController();
 			registerCommand(STARTUP, StartupCommand);
 	        registerCommand(SWF_FRAME_DATA, SetSWFFrameDataCommand);
+	        registerCommand(ZOOM_IN, ZoomCommand);
+	        registerCommand(ZOOM_OUT, ZoomCommand);
 		}
 		
 		/* === Functions === */

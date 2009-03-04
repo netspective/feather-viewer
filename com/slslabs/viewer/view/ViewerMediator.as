@@ -1,13 +1,18 @@
 package com.slslabs.viewer.view {
 	
 	import com.slslabs.viewer.ViewerFacade;
+	import com.slslabs.viewer.utils.ImageUtils;
 	
 	import flash.display.AVM1Movie;
 	import flash.display.LoaderInfo;
 	import flash.display.MovieClip;
+	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.geom.Rectangle;
 	
 	import mx.controls.Alert;
+	import mx.events.ResizeEvent;
 	
 	import org.puremvc.as3.core.View;
 	import org.puremvc.as3.interfaces.INotification;
@@ -48,6 +53,9 @@ package com.slslabs.viewer.view {
 			facade.registerMediator( new ViewerToolbarMediator(app.toolbar) );
 			
 			app.loader.addEventListener(Event.INIT, onSWFInit);
+			app.loader.addEventListener(ResizeEvent.RESIZE, onSWFLoaderResize);
+			app.loader.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+			app.loader.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);			
 		}
 		
 		/* === Constructor === */
@@ -72,6 +80,18 @@ package com.slslabs.viewer.view {
 			];
 		}
 		
+		public function zoomContent(zoomDirection:String, zoomStep:Number):void {
+			var zoomFactor:Number = zoomDirection ==  ViewerFacade.ZOOM_IN ? zoomStep : -zoomStep;
+			app.loader.content.scaleX += zoomFactor;
+			app.loader.content.scaleY += zoomFactor;
+		}
+		
+		private function getSWFLoaderRectangle():Rectangle {
+			var width:Number = app.width - app.getStyle("paddingLeft") - app.getStyle("paddingRight");
+			var height:Number = app.height - app.toolbar.height - app.getStyle("paddingTop") - app.getStyle("paddingBottom");
+			return new Rectangle(0, 0, width, height); 
+		}		
+		
 		/* === Functions === */
 		
 		/* --- Event Handlers --- */
@@ -89,6 +109,21 @@ package com.slslabs.viewer.view {
 				Alert.show("SWFs loaded must be Flash 9 or later.  Flash 8 and earlier SWFs cannot be controlled.", "Incompatible SWF", Alert.OK);
 			}
 		}
+		
+		private function onSWFLoaderResize(evt:Event):void {
+			var scale:Number = ImageUtils.scaleDownValue2(getSWFLoaderRectangle(), app.loader.content);
+			trace("ViewerMediator:onLoaderContentComplete scale==" + scale);
+			app.loader.content.scaleX = scale;
+			app.loader.content.scaleY = scale;
+		}
+		
+		private function onMouseDown(evt:MouseEvent):void {
+			(app.loader.content as Sprite).startDrag();
+		}
+		
+		private function onMouseUp(evt:MouseEvent):void {
+			(app.loader.content as Sprite).stopDrag();
+		}		
 		
 		/* --- Public Accessors --- */
 		
