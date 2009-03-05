@@ -3,7 +3,11 @@ package com.slslabs.viewer.controller {
 	//pmvcgen:insert imports
 	
 	import com.slslabs.viewer.ViewerFacade;
+	import com.slslabs.viewer.utils.ScaleUtils;
 	import com.slslabs.viewer.view.ViewerMediator;
+	import com.slslabs.viewer.view.ViewerToolbarMediator;
+	
+	import flash.utils.Dictionary;
 	
 	import org.puremvc.as3.core.View;
 	import org.puremvc.as3.interfaces.INotification;
@@ -21,13 +25,31 @@ package com.slslabs.viewer.controller {
 	   
 		override public function execute(note:INotification):void {
 			trace("ZoomCommand:execute");
-			var mediator:ViewerMediator = facade.retrieveMediator(ViewerMediator.NAME) as ViewerMediator;
-			var params:Object = mediator.app.parameters;
-			var zoomStep:Number = params.hasOwnProperty("zoomStep") ? params.zoomStep : ViewerFacade.DEFAULT_ZOOM_STEP;
-			var zoomDirection:String = note.getName();
-			mediator.zoomContent(zoomDirection, zoomStep);
+			var viewerMediator:ViewerMediator = facade.retrieveMediator(ViewerMediator.NAME) as ViewerMediator;
+			var toolbarMediator:ViewerToolbarMediator = facade.retrieveMediator(ViewerToolbarMediator.NAME) as ViewerToolbarMediator;
+
+			var zoomIn:Boolean = note.getName() == ViewerFacade.ZOOM_IN;
+			var scale:Number = getNewScale(viewerMediator.scale, zoomIn);
+
+			if(ScaleUtils.isValid(scale)) {
+				viewerMediator.scale = scale;
+			}
+			toolbarMediator.scale = viewerMediator.scale;
 		}
 		
+		private function getNewScale(oldScale:Number, zoomIn:Boolean):Number {
+			for each(var group:Object in ScaleUtils.SCALE_GROUPS) {
+				if(oldScale < group.ceiling || (oldScale == group.ceiling && !zoomIn)) {
+					var step:Number = group.scale;
+					return zoomIn ? oldScale + step : oldScale - step;
+				}
+			}
+			return oldScale;
+		}		
+		
+		private function atOrBelowCeiling(scale:Number, ceiling:Number, zoomIn:Boolean):Boolean {
+			return scale < ceiling || (scale == ceiling && !zoomIn);
+		}	
 	}
 	
 }

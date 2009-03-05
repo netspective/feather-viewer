@@ -83,13 +83,7 @@ package com.slslabs.viewer.view {
 				ViewerFacade.CHANGE_PAGE
 			];
 		}
-		
-		public function zoomContent(zoomDirection:String, zoomStep:Number):void {
-			var zoomFactor:Number = zoomDirection == ViewerFacade.ZOOM_IN ? zoomStep : -zoomStep;
-			app.loaderViewStack.content.scaleX += zoomFactor;
-			app.loaderViewStack.content.scaleY += zoomFactor;
-		}
-		
+				
 		private function getCurrentFrame():int {
 			var currentFrame:int = countTotalFrames(app.loaderViewStack.selectedIndex);
 			currentFrame += canNavMovie ? swfAsMovieClip.currentFrame : 1;
@@ -151,6 +145,7 @@ package com.slslabs.viewer.view {
 			trace("ViewerMediator:onLoaderContentComplete scale==" + scale);
 			app.loaderViewStack.content.scaleX *= scale;
 			app.loaderViewStack.content.scaleY *= scale;
+			sendNotification(ViewerFacade.SCALE_CHANGED, this.scale);
 		}
 		
 		/* === Functions === */
@@ -189,6 +184,15 @@ package com.slslabs.viewer.view {
 		public function get app():PDFViewer { return viewComponent as PDFViewer; }
 		
 		public function get swfAsMovieClip():MovieClip { return app.loaderViewStack.content as MovieClip; }
+		
+		public function get scale():Number {
+			return app.loaderViewStack.content.scaleX;			
+		}		
+		
+		public function set scale(scale:Number):void {
+			app.loaderViewStack.content.scaleX = scale;
+			app.loaderViewStack.content.scaleY = scale;
+		}
 		
 		/* === Public Accessors === */
 		

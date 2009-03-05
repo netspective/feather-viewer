@@ -3,9 +3,13 @@ package com.slslabs.viewer.view {
 	import com.slslabs.viewer.ViewerFacade;
 	import com.slslabs.viewer.view.components.ViewerToolbar;
 	
+	import flash.events.Event;
+	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
+	import flash.ui.Keyboard;
 	
 	import mx.events.ItemClickEvent;
+	import mx.formatters.NumberFormatter;
 	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
@@ -24,6 +28,8 @@ package com.slslabs.viewer.view {
 		
 		public static const NAME:String = "ViewerToolbarMediator";
 		
+		private var numberFormatter:NumberFormatter;
+		
 		/* === Variables === */
 		
 		/* --- Constructor --- */
@@ -38,6 +44,10 @@ package com.slslabs.viewer.view {
 			
 			view.addEventListener(MouseEvent.CLICK, onClick);
 			view.zoomBar.addEventListener(ItemClickEvent.ITEM_CLICK, onItemClick);
+			view.scaleTI.addEventListener(KeyboardEvent.KEY_DOWN, onScaleChange);
+			
+			numberFormatter = new NumberFormatter();
+			numberFormatter.precision = 0;
 		}
 		
 		/* === Constructor === */
@@ -79,11 +89,20 @@ package com.slslabs.viewer.view {
 			sendNotification(evt.item.type);
 		}
 		
+		private function onScaleChange(evt:KeyboardEvent):void {
+			if(evt.charCode == Keyboard.ENTER || evt.charCode == Keyboard.TAB)
+				sendNotification(ViewerFacade.SCALE_CHANGED, view.scaleTI.text);
+		}
+		
 		/* === Event Handlers === */
 		
 		/* --- Public Accessors --- */
 		
 		public function get view():ViewerToolbar { return viewComponent as ViewerToolbar; }
+		
+		public function set scale(scale:Number):void {
+			view.scaleTI.text = numberFormatter.format(scale*100) + "%";
+		}
 		
 		/* === Public Accessors === */
 		

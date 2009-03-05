@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:ApplicationControlBar xmlns:mx="http://www.adobe.com/2006/mxml">
-	
+		
 	<mx:ButtonBar id="zoomBar" width="56" height="27">
 		<mx:dataProvider>
 			<mx:Object icon="@Embed(skinClass='Button_minus')" type="zoomOut" />
@@ -8,6 +8,8 @@
 		</mx:dataProvider>
 	</mx:ButtonBar>
 	
+	<mx:TextInput id="scaleTI" width="56" height="27"/>
+
 	<mx:Spacer width="5" />
 	
 	<mx:VRule height="27" />

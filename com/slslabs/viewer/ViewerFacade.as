@@ -30,7 +30,8 @@ package com.slslabs.viewer {
 		
 		public static const ZOOM_OUT:String = "zoomOut";
 		
-		public static const DEFAULT_ZOOM_STEP:Number = 0.1;
+		public static const SCALE_CHANGED:String = "scaleChanged";
+		
 
 		/* === Variables === */
 		
@@ -57,6 +58,7 @@ package com.slslabs.viewer {
 	        registerCommand(SWF_FRAME_DATA, SetSWFFrameDataCommand);
 	        registerCommand(ZOOM_IN, ZoomCommand);
 	        registerCommand(ZOOM_OUT, ZoomCommand);
+	        registerCommand(SCALE_CHANGED, ScaleChangedCommand);
 		}
 		
 		/* === Functions === */
