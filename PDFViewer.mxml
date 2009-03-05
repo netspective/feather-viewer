@@ -18,6 +18,6 @@
 	
 	<components:ViewerToolbar id="toolbar" dock="true" />
 	
-	<mx:SWFLoader id="loader" />					
+	<components:SWFLoaderViewStack id="loaderViewStack" />					
 
 </mx:Application>

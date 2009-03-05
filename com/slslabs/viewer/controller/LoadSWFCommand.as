@@ -19,8 +19,8 @@ package com.slslabs.viewer.controller {
 			var app:PDFViewer = note.getBody() as PDFViewer;
 			var viewerProxy:ViewerProxy = facade.retrieveProxy(ViewerProxy.NAME) as ViewerProxy;
 			
-			if(viewerProxy.swfPath) {
-				app.loader.source = viewerProxy.swfPath;
+			if(viewerProxy.swfPaths) {
+				app.loaderViewStack.srcPaths = viewerProxy.swfPaths;
 			}
 		}
 		

@@ -23,9 +23,9 @@ package com.slslabs.viewer.controller {
 			var params:Object = note.getBody().parameters;
 			var viewerProxy:ViewerProxy = facade.retrieveProxy(ViewerProxy.NAME) as ViewerProxy;
 			
-			// check for swf
-			if( params.hasOwnProperty("swf") ) {
-				viewerProxy.swfPath = params.swf;
+			// check for swfs
+			if( params.hasOwnProperty("swfs") ) {
+				viewerProxy.swfPaths = params.swfs.split(",");
 			}
 		}
 		

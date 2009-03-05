@@ -26,7 +26,7 @@ package com.slslabs.viewer.model {
 		/**
 		 * Path from which to load the SWF.
 		 */
-		public var swfPath:String;
+		public var swfPaths:Array;
 		
 		/* === Variables === */
 		
@@ -40,7 +40,7 @@ package com.slslabs.viewer.model {
 		public function ViewerProxy() {
 			super(NAME);
 			numFrames = 0;
-			swfPath = "";
+			swfPaths = [""];
 		}
 		
 		/* === Constructor === */

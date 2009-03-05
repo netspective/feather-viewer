@@ -12,6 +12,7 @@ package com.slslabs.viewer.view {
 	import flash.geom.Rectangle;
 	
 	import mx.controls.Alert;
+	import mx.controls.SWFLoader;
 	import mx.events.ResizeEvent;
 	
 	import org.puremvc.as3.core.View;
@@ -37,6 +38,11 @@ package com.slslabs.viewer.view {
 		 */
 		protected var canNavMovie:Boolean;
 		
+		// local variables for panning
+		private var isPanning:Boolean;
+		private var panningStartX:Number;
+		private var panningStartY:Number;
+		
 		/* === Variables === */
 		
 		/* --- Constructor --- */
@@ -52,10 +58,10 @@ package com.slslabs.viewer.view {
 			
 			facade.registerMediator( new ViewerToolbarMediator(app.toolbar) );
 			
-			app.loader.addEventListener(Event.INIT, onSWFInit);
-			app.loader.addEventListener(ResizeEvent.RESIZE, onSWFLoaderResize);
-			app.loader.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
-			app.loader.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);			
+			app.loaderViewStack.addEventListener(Event.INIT, onSWFInit);
+			app.loaderViewStack.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+			app.loaderViewStack.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+			app.loaderViewStack.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);			
 		}
 		
 		/* === Constructor === */
@@ -65,11 +71,9 @@ package com.slslabs.viewer.view {
 		override public function handleNotification(note:INotification):void {
 			switch( note.getName() ) {
 				case ViewerFacade.CHANGE_PAGE:
-					if(canNavMovie) {
-						note.getBody().goForward ? swfAsMovieClip.nextFrame() : swfAsMovieClip.prevFrame();
-						sendNotification(ViewerFacade.UPDATE_PAGES,
-							{currentPage: swfAsMovieClip.currentFrame, totalPages: swfAsMovieClip.totalFrames});
-					}
+					changePage(note.getBody().goForward);
+					sendNotification(ViewerFacade.UPDATE_PAGES,
+						{currentPage: getCurrentFrame(), totalPages: countTotalFrames()});
 					break;
 			}
 		}
@@ -81,9 +85,36 @@ package com.slslabs.viewer.view {
 		}
 		
 		public function zoomContent(zoomDirection:String, zoomStep:Number):void {
-			var zoomFactor:Number = zoomDirection ==  ViewerFacade.ZOOM_IN ? zoomStep : -zoomStep;
-			app.loader.content.scaleX += zoomFactor;
-			app.loader.content.scaleY += zoomFactor;
+			var zoomFactor:Number = zoomDirection == ViewerFacade.ZOOM_IN ? zoomStep : -zoomStep;
+			app.loaderViewStack.content.scaleX += zoomFactor;
+			app.loaderViewStack.content.scaleY += zoomFactor;
+		}
+		
+		private function getCurrentFrame():int {
+			var currentFrame:int = countTotalFrames(app.loaderViewStack.selectedIndex);
+			currentFrame += canNavMovie ? swfAsMovieClip.currentFrame : 1;
+			return currentFrame;
+		}
+		
+		private function changePage(goForward:Boolean):void {
+			if(withinNavigableMovie(goForward)) {
+				goForward ? swfAsMovieClip.nextFrame() : swfAsMovieClip.prevFrame();
+			} else if(hasOtherMovie(goForward)) {
+				app.loaderViewStack.selectedIndex += goForward ? 1 : -1;
+				openNewSWF(goForward);
+			}
+		}
+		
+		private function hasOtherMovie(goForward:Boolean):Boolean {
+			return (goForward && app.loaderViewStack.selectedIndex + 1 < app.loaderViewStack.swfLoaders.length)
+				|| (!goForward && app.loaderViewStack.selectedIndex > 0);
+		}
+		
+		private function withinNavigableMovie(goForward:Boolean):Boolean {
+			if(!canNavMovie) 
+				return false;
+			return (goForward && swfAsMovieClip.currentFrame < swfAsMovieClip.totalFrames)
+				|| (!goForward && swfAsMovieClip.currentFrame > 1);
 		}
 		
 		private function getSWFLoaderRectangle():Rectangle {
@@ -92,44 +123,72 @@ package com.slslabs.viewer.view {
 			return new Rectangle(0, 0, width, height); 
 		}		
 		
+		private function openNewSWF(openFirst:Boolean=true):void {
+			canNavMovie = false;
+			if(app.loaderViewStack.content is MovieClip) {
+				canNavMovie = true;
+				swfAsMovieClip.gotoAndStop(openFirst ? 1 : swfAsMovieClip.totalFrames);
+			}
+			else if(app.loaderViewStack.content is AVM1Movie) {
+				Alert.show("SWFs loaded must be Flash 9 or later.  Flash 8 and earlier SWFs cannot be controlled.", "Incompatible SWF", Alert.OK);
+			}	
+			resizeSWF();	
+		}
+		
+		private function countTotalFrames(upToIndex:int=-1):int {
+			var frameCount:int = 0;
+			if(upToIndex == -1)
+				upToIndex = app.loaderViewStack.swfLoaders.length;
+			for(var i:int = 0; i < upToIndex; i++) {
+				var loader:SWFLoader = app.loaderViewStack.swfLoaders[i] as SWFLoader;
+				frameCount += loader.content is MovieClip ? MovieClip(loader.content).totalFrames : 1;
+			}
+			return frameCount;
+		}
+		
+		private function resizeSWF(evt:Event=null):void {
+			var scale:Number = ImageUtils.scaleDownValue2(getSWFLoaderRectangle(), app.loaderViewStack.content);
+			trace("ViewerMediator:onLoaderContentComplete scale==" + scale);
+			app.loaderViewStack.content.scaleX *= scale;
+			app.loaderViewStack.content.scaleY *= scale;
+		}
+		
 		/* === Functions === */
 		
 		/* --- Event Handlers --- */
 		
 		private function onSWFInit(evt:Event):void {
-			var info:LoaderInfo = app.loader.loaderInfo;
-			canNavMovie = false;
-			
-			if(app.loader.content is MovieClip) {
-				canNavMovie = true;
-				swfAsMovieClip.gotoAndStop(1);
-				sendNotification(ViewerFacade.SWF_FRAME_DATA, swfAsMovieClip.totalFrames);
-			}
-			else if(app.loader.content is AVM1Movie) {
-				Alert.show("SWFs loaded must be Flash 9 or later.  Flash 8 and earlier SWFs cannot be controlled.", "Incompatible SWF", Alert.OK);
-			}
+			openNewSWF();
+			sendNotification(ViewerFacade.SWF_FRAME_DATA, countTotalFrames());
 		}
 		
-		private function onSWFLoaderResize(evt:Event):void {
-			var scale:Number = ImageUtils.scaleDownValue2(getSWFLoaderRectangle(), app.loader.content);
-			trace("ViewerMediator:onLoaderContentComplete scale==" + scale);
-			app.loader.content.scaleX = scale;
-			app.loader.content.scaleY = scale;
-		}
 		
 		private function onMouseDown(evt:MouseEvent):void {
-			(app.loader.content as Sprite).startDrag();
+			isPanning = true;
+			panningStartX = evt.localX;
+			panningStartY = evt.localY;
+		}
+		
+		private function onMouseMove(evt:MouseEvent):void {
+			if(isPanning) {
+				var deltaX:Number = evt.localX - panningStartX;
+				var deltaY:Number = evt.localY - panningStartY;
+				app.loaderViewStack.content.x += deltaX;
+				app.loaderViewStack.content.y += deltaY;
+				panningStartX = evt.localX;
+				panningStartY = evt.localY;
+			}
 		}
 		
 		private function onMouseUp(evt:MouseEvent):void {
-			(app.loader.content as Sprite).stopDrag();
+			isPanning = false;
 		}		
 		
 		/* --- Public Accessors --- */
 		
 		public function get app():PDFViewer { return viewComponent as PDFViewer; }
 		
-		public function get swfAsMovieClip():MovieClip { return app.loader.content as MovieClip; }
+		public function get swfAsMovieClip():MovieClip { return app.loaderViewStack.content as MovieClip; }
 		
 		/* === Public Accessors === */
 		
