@@ -3,7 +3,7 @@ package com.slslabs.viewer.controller {
 	//pmvcgen:insert imports
 	
 	import com.slslabs.viewer.ViewerFacade;
-	import com.slslabs.viewer.utils.ScaleUtils;
+	import com.slslabs.viewer.model.utils.ScaleUtils;
 	import com.slslabs.viewer.view.ViewerMediator;
 	import com.slslabs.viewer.view.ViewerToolbarMediator;
 	
@@ -31,8 +31,8 @@ package com.slslabs.viewer.controller {
 			var zoomIn:Boolean = note.getName() == ViewerFacade.ZOOM_IN;
 			var scale:Number = getNewScale(viewerMediator.scale, zoomIn);
 
-			if(ScaleUtils.isValid(scale)) {
-				viewerMediator.scale = scale;
+			if( !isNaN(scale) ) {
+				viewerMediator.scale = ScaleUtils.clipValue(scale);
 			}
 			toolbarMediator.scale = viewerMediator.scale;
 		}

@@ -1,7 +1,7 @@
 package com.slslabs.viewer.view {
 	
 	import com.slslabs.viewer.ViewerFacade;
-	import com.slslabs.viewer.utils.ImageUtils;
+	import com.slslabs.viewer.model.utils.ImageUtils;
 	
 	import flash.display.AVM1Movie;
 	import flash.display.LoaderInfo;

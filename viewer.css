@@ -24,8 +24,8 @@ ButtonBar {
 TextInput {
 	border-color: #aeaeae;
 	border-style: solid;
-	padding-left: 3;
-	padding-right: 4;
+	padding-top: 4px;
+	text-align: center;
 }
 
 VRule {

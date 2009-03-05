@@ -1,4 +1,4 @@
-package com.slslabs.viewer.utils {
+package com.slslabs.viewer.model.utils {
 	
 	import flash.display.DisplayObject;
 	import flash.geom.Rectangle;

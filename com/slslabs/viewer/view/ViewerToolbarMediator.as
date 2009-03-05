@@ -4,6 +4,7 @@ package com.slslabs.viewer.view {
 	import com.slslabs.viewer.view.components.ViewerToolbar;
 	
 	import flash.events.Event;
+	import flash.events.FocusEvent;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.ui.Keyboard;
@@ -44,6 +45,10 @@ package com.slslabs.viewer.view {
 			
 			view.addEventListener(MouseEvent.CLICK, onClick);
 			view.zoomBar.addEventListener(ItemClickEvent.ITEM_CLICK, onItemClick);
+			view.scaleTI.addEventListener(FocusEvent.FOCUS_IN,
+				function(evt:FocusEvent):void {
+					highlightScaleText();
+				});
 			view.scaleTI.addEventListener(KeyboardEvent.KEY_DOWN, onScaleChange);
 			
 			numberFormatter = new NumberFormatter();
@@ -66,6 +71,10 @@ package com.slslabs.viewer.view {
 			return [
 				ViewerFacade.UPDATE_PAGES
 			];
+		}
+		
+		public function highlightScaleText():void {
+			view.scaleTI.setSelection(0, view.scaleTI.text.length);
 		}
 		
 		public function updatePagesLabel(currentPage:uint, totalPages:uint):void {
@@ -92,6 +101,8 @@ package com.slslabs.viewer.view {
 		private function onScaleChange(evt:KeyboardEvent):void {
 			if(evt.charCode == Keyboard.ENTER || evt.charCode == Keyboard.TAB)
 				sendNotification(ViewerFacade.SCALE_CHANGED, view.scaleTI.text);
+			else if(evt.charCode == Keyboard.ESCAPE)
+				sendNotification(ViewerFacade.SCALE_CHANGED, "");
 		}
 		
 		/* === Event Handlers === */
@@ -102,6 +113,7 @@ package com.slslabs.viewer.view {
 		
 		public function set scale(scale:Number):void {
 			view.scaleTI.text = numberFormatter.format(scale*100) + "%";
+			highlightScaleText();
 		}
 		
 		/* === Public Accessors === */

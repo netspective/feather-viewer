@@ -8,7 +8,7 @@
 		</mx:dataProvider>
 	</mx:ButtonBar>
 	
-	<mx:TextInput id="scaleTI" width="56" height="27"/>
+	<mx:TextInput id="scaleTI" width="56" height="27" />
 
 	<mx:Spacer width="5" />
 	
