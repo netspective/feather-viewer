@@ -58,10 +58,11 @@ package com.slslabs.viewer.view {
 			
 			facade.registerMediator( new ViewerToolbarMediator(app.toolbar) );
 			
+			// prevent the view stack from displaying anything until the initial resize and
+			// centering are complete
+			app.loaderViewStack.visible = false;
+
 			app.loaderViewStack.addEventListener(Event.INIT, onSWFInit);
-			app.loaderViewStack.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
-			app.loaderViewStack.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-			app.loaderViewStack.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);			
 		}
 		
 		/* === Constructor === */
@@ -127,6 +128,7 @@ package com.slslabs.viewer.view {
 				Alert.show("SWFs loaded must be Flash 9 or later.  Flash 8 and earlier SWFs cannot be controlled.", "Incompatible SWF", Alert.OK);
 			}	
 			resizeSWF();	
+			centerSWFContainer();
 		}
 		
 		private function countTotalFrames(upToIndex:int=-1):int {
@@ -140,25 +142,56 @@ package com.slslabs.viewer.view {
 			return frameCount;
 		}
 		
-		private function resizeSWF(evt:Event=null):void {
+		private function resizeSWF():void {
 			var scale:Number = ImageUtils.scaleDownValue2(getSWFLoaderRectangle(), app.loaderViewStack.content);
 			trace("ViewerMediator:onLoaderContentComplete scale==" + scale);
-			app.loaderViewStack.content.scaleX *= scale;
-			app.loaderViewStack.content.scaleY *= scale;
+			this.scale *= scale;
 			sendNotification(ViewerFacade.SCALE_CHANGED, this.scale);
 		}
+		
+		private function centerSWFContainer():void {
+			var loaderWidth:int = app.loaderViewStack.width;
+			var loaderHeight:int = app.loaderViewStack.height;
+			var contentWidth:int = app.loaderViewStack.contentContainer.width;
+			var contentHeight:int = app.loaderViewStack.contentContainer.height;
+			app.loaderViewStack.contentContainer.x = (loaderWidth - contentWidth)/2;
+			app.loaderViewStack.contentContainer.y = (loaderHeight - contentHeight)/2;
+		}
+		
+		private function pan(dimension:String, evt:MouseEvent):void {
+			var axis:String = dimension == "width" ? "x" : "y";
+			var panningStartAxisValue:Number = this["panningStart" + axis.toUpperCase()];
+			var localAxisValue:Number = evt["local" + axis.toUpperCase()];
+			// only allow panning in the dimension in which the content is larger than the container
+			if(app.loaderViewStack.contentContainer[dimension] > app.loaderViewStack[dimension]) {
+					var delta:Number = localAxisValue - panningStartAxisValue;
+					// don't allow panning past any edge of the content
+					if(app.loaderViewStack.contentContainer[axis] + delta <= 0 
+						&& app.loaderViewStack.contentContainer[axis] + delta + app.loaderViewStack.contentContainer[dimension] >= app.loaderViewStack[dimension]) {
+						app.loaderViewStack.contentContainer[axis] += delta;
+						this["panningStart" + axis.toUpperCase()] = localAxisValue;
+					}
+			}
+		}		
 		
 		/* === Functions === */
 		
 		/* --- Event Handlers --- */
 		
 		private function onSWFInit(evt:Event):void {
+			app.loaderViewStack.contentContainer.addEventListener(MouseEvent.MOUSE_UP, onMouseUpOrOut);
+			app.loaderViewStack.contentContainer.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+			app.loaderViewStack.contentContainer.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);	
+			app.loaderViewStack.contentContainer.addEventListener(MouseEvent.MOUSE_OUT, onMouseUpOrOut);					
+			
 			openNewSWF();
 			sendNotification(ViewerFacade.SWF_FRAME_DATA, countTotalFrames());
+			app.loaderViewStack.visible = true;
 		}
 		
 		
 		private function onMouseDown(evt:MouseEvent):void {
+			trace("ViewerMediator:onMouseMove");
 			isPanning = true;
 			panningStartX = evt.localX;
 			panningStartY = evt.localY;
@@ -166,16 +199,12 @@ package com.slslabs.viewer.view {
 		
 		private function onMouseMove(evt:MouseEvent):void {
 			if(isPanning) {
-				var deltaX:Number = evt.localX - panningStartX;
-				var deltaY:Number = evt.localY - panningStartY;
-				app.loaderViewStack.content.x += deltaX;
-				app.loaderViewStack.content.y += deltaY;
-				panningStartX = evt.localX;
-				panningStartY = evt.localY;
+				pan("height", evt);
+				pan("width", evt);
 			}
 		}
 		
-		private function onMouseUp(evt:MouseEvent):void {
+		private function onMouseUpOrOut(evt:MouseEvent):void {
 			isPanning = false;
 		}		
 		
@@ -186,12 +215,12 @@ package com.slslabs.viewer.view {
 		public function get swfAsMovieClip():MovieClip { return app.loaderViewStack.content as MovieClip; }
 		
 		public function get scale():Number {
-			return app.loaderViewStack.content.scaleX;			
+			return app.loaderViewStack.contentContainer.scale;			
 		}		
 		
 		public function set scale(scale:Number):void {
-			app.loaderViewStack.content.scaleX = scale;
-			app.loaderViewStack.content.scaleY = scale;
+			app.loaderViewStack.contentContainer.scale = scale;
+			centerSWFContainer();
 		}
 		
 		/* === Public Accessors === */

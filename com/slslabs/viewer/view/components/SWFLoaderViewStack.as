@@ -3,8 +3,12 @@ package com.slslabs.viewer.view.components {
 	import flash.events.Event;
 	
 	import mx.containers.Canvas;
+	import mx.containers.VBox;
 	import mx.containers.ViewStack;
 	import mx.controls.SWFLoader;
+	import mx.core.Container;
+	import mx.core.ScrollPolicy;
+	import mx.events.FlexEvent;
 
 	/**
 	 * SWFLoaderViewStack. A view stack that holds SWFLoader instances.
@@ -20,6 +24,8 @@ package com.slslabs.viewer.view.components {
 		
 		public var swfLoaders:Array = [];
 	
+		private var swfLoaderContainers:Array = [];
+		
 		private var initializedChildCount:int;
 		
 		/* === Variables === */
@@ -27,7 +33,6 @@ package com.slslabs.viewer.view.components {
 		/* --- Constructor --- */
 		
 		public function SWFLoaderViewStack() {
-			resizeToContent = true;
 		}
 		
 		/* === Constructor === */
@@ -49,14 +54,12 @@ package com.slslabs.viewer.view.components {
 		}
 		
 		private function addSWFLoader(path:String):void {
-			var container:Canvas = new Canvas();
-			var loader:SWFLoader = new SWFLoader();
-			container.addChild(loader);
+			var container:SWFLoaderContainer = new SWFLoaderContainer();
 			this.addChild(container);
-			swfLoaders.push(loader);
-			loader.addEventListener(Event.INIT, onChildInit);		
-			loader.source = path;			
-		}
+			swfLoaderContainers.push(container);
+			swfLoaders.push(container.loader);
+			container.loader.source = path;	
+		}		
 		
 		/* === Functions === */
 		
@@ -64,6 +67,10 @@ package com.slslabs.viewer.view.components {
 		
 		public function get content():DisplayObject {
 			return numChildren > 0 ? swfLoaders[selectedIndex].content : null;
+		}
+		
+		public function get contentContainer():SWFLoaderContainer {
+			return numChildren > 0 ? swfLoaderContainers[selectedIndex] : null;
 		}
 		
 		/* === Public Accessors === */

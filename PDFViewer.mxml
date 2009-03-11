@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
                 xmlns:components="com.slslabs.viewer.view.components.*"
-                creationComplete="facade.startup(this)"
-                horizontalScrollPolicy="off"
-                verticalScrollPolicy="off"
-                clipContent="true">
+                creationComplete="facade.startup(this)">
 
 	<mx:Script>
 		<![CDATA[
@@ -18,6 +15,8 @@
 	
 	<components:ViewerToolbar id="toolbar" dock="true" />
 	
-	<components:SWFLoaderViewStack id="loaderViewStack" />					
+	<mx:Canvas id="swfLoaderContainer" width="100%" height="100%">
+		<components:SWFLoaderViewStack id="loaderViewStack" width="100%" height="100%" />							
+	</mx:Canvas>
 
 </mx:Application>

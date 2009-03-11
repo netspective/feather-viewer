@@ -35,7 +35,7 @@ package com.slslabs.viewer.model.utils {
 		 */
 		public static function scaleDownValue2(bounds:Rectangle, content:DisplayObject):Number {
 			if(content.width > bounds.width || content.height > bounds.height) {
-				return (content.width - bounds.width > content.height - bounds.height)
+				return (content.width / bounds.width > content.height / bounds.height)
 							? bounds.width  / content.width
 							: bounds.height / content.height;
 			}
