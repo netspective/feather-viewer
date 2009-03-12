@@ -60,7 +60,9 @@ package com.slslabs.viewer.view.components {
 			swfLoaderContainers.push(container);
 			container.horizontalScrollPolicy = ScrollPolicy.OFF;
 			container.verticalScrollPolicy = ScrollPolicy.OFF;
-			container.clipContent = false;
+			// this is a hack to get the parent to correctly clip off the content
+			container.height = this.height + 100;
+			container.height = this.width + 100;
 
 			var loader:SWFLoader = new SWFLoader();
 			container.addChild(loader);

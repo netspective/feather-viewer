@@ -218,11 +218,9 @@ package com.slslabs.viewer.view {
 		}		
 		
 		public function set scale(scale:Number):void {
-			trace("ViewerMediator:set scale height before==" + app.loaderViewStack.content.height);
 			app.loaderViewStack.content.scaleX = scale;
 			app.loaderViewStack.content.scaleY = scale;
 			centerSWFContainer();
-			trace("ViewerMediator:set scale height after==" + app.loaderViewStack.content.height);
 		}
 		
 		/* === Public Accessors === */
