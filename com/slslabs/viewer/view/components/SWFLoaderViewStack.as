@@ -54,11 +54,21 @@ package com.slslabs.viewer.view.components {
 		}
 		
 		private function addSWFLoader(path:String):void {
-			var container:SWFLoaderContainer = new SWFLoaderContainer();
+			var container:Canvas = new Canvas();
 			this.addChild(container);
 			swfLoaderContainers.push(container);
-			swfLoaders.push(container.loader);
-			container.loader.source = path;	
+			container.horizontalScrollPolicy = ScrollPolicy.OFF;
+			container.verticalScrollPolicy = ScrollPolicy.OFF;
+			container.clipContent = false;
+			container.setStyle("horizontalAlign", "center");
+			container.setStyle("verticalAlign", "middle");
+
+
+			var loader:SWFLoader = new SWFLoader();
+			container.addChild(loader);
+			swfLoaders.push(loader);
+			loader.addEventListener(Event.INIT, onChildInit);		
+			loader.source = path;	
 		}		
 		
 		/* === Functions === */
@@ -67,10 +77,6 @@ package com.slslabs.viewer.view.components {
 		
 		public function get content():DisplayObject {
 			return numChildren > 0 ? swfLoaders[selectedIndex].content : null;
-		}
-		
-		public function get contentContainer():SWFLoaderContainer {
-			return numChildren > 0 ? swfLoaderContainers[selectedIndex] : null;
 		}
 		
 		/* === Public Accessors === */
