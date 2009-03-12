@@ -33,6 +33,7 @@ package com.slslabs.viewer.view.components {
 		/* --- Constructor --- */
 		
 		public function SWFLoaderViewStack() {
+			clipContent = true;
 		}
 		
 		/* === Constructor === */
@@ -60,9 +61,6 @@ package com.slslabs.viewer.view.components {
 			container.horizontalScrollPolicy = ScrollPolicy.OFF;
 			container.verticalScrollPolicy = ScrollPolicy.OFF;
 			container.clipContent = false;
-			container.setStyle("horizontalAlign", "center");
-			container.setStyle("verticalAlign", "middle");
-
 
 			var loader:SWFLoader = new SWFLoader();
 			container.addChild(loader);

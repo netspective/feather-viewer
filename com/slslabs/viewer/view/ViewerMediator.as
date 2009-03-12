@@ -11,6 +11,7 @@ package com.slslabs.viewer.view {
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
 	
+	import mx.containers.Canvas;
 	import mx.controls.Alert;
 	import mx.controls.SWFLoader;
 	import mx.events.ResizeEvent;
@@ -113,9 +114,7 @@ package com.slslabs.viewer.view {
 		}
 		
 		private function getSWFLoaderRectangle():Rectangle {
-			var width:Number = app.width - app.getStyle("paddingLeft") - app.getStyle("paddingRight");
-			var height:Number = app.height - app.toolbar.height - app.getStyle("paddingTop") - app.getStyle("paddingBottom");
-			return new Rectangle(0, 0, width, height); 
+			return new Rectangle(0, 0, app.loaderViewStack.width, app.loaderViewStack.height); 
 		}		
 		
 		private function openNewSWF(openFirst:Boolean=true):void {
@@ -219,9 +218,11 @@ package com.slslabs.viewer.view {
 		}		
 		
 		public function set scale(scale:Number):void {
+			trace("ViewerMediator:set scale height before==" + app.loaderViewStack.content.height);
 			app.loaderViewStack.content.scaleX = scale;
 			app.loaderViewStack.content.scaleY = scale;
 			centerSWFContainer();
+			trace("ViewerMediator:set scale height after==" + app.loaderViewStack.content.height);
 		}
 		
 		/* === Public Accessors === */

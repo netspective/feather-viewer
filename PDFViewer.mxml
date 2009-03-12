@@ -15,6 +15,8 @@
 	
 	<components:ViewerToolbar id="toolbar" dock="true" />
 
-	<components:SWFLoaderViewStack id="loaderViewStack" width="100%" height="100%" />							
+	<mx:Canvas width="100%" height="100%">	
+		<components:SWFLoaderViewStack id="loaderViewStack" height="100%" width="100%" />									
+	</mx:Canvas>
 
 </mx:Application>
