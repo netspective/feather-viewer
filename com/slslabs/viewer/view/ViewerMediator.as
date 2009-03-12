@@ -127,7 +127,7 @@ package com.slslabs.viewer.view {
 				Alert.show("SWFs loaded must be Flash 9 or later.  Flash 8 and earlier SWFs cannot be controlled.", "Incompatible SWF", Alert.OK);
 			}	
 			resizeSWF();	
-			centerSWFContainer();
+			centerSWF();
 		}
 		
 		private function countTotalFrames(upToIndex:int=-1):int {
@@ -148,13 +148,33 @@ package com.slslabs.viewer.view {
 			sendNotification(ViewerFacade.SCALE_CHANGED, this.scale);
 		}
 		
-		private function centerSWFContainer():void {
+		private function moveFocusRectangle(oldWidth:Number, oldHeight:Number):void {
+			if(oldWidth == 0 || oldHeight == 0)
+				return;
+				
+			var containerWidth:int = app.loaderViewStack.width;
+			var containerHeight:int = app.loaderViewStack.height;
+			var contentWidth:int = app.loaderViewStack.content.width;
+			var contentHeight:int = app.loaderViewStack.content.height;
+
+			// We want to keep the center of the container over the center of the visible part of the content.
+			var xToWidthRatio:Number = (app.loaderViewStack.content.x - containerWidth/2)/oldWidth;
+			var yToHeightRatio:Number = (app.loaderViewStack.content.y - containerHeight/2)/oldHeight;
+
+			var newX:Number = xToWidthRatio * contentWidth;
+			var newY:Number = yToHeightRatio * contentHeight;
+
+			app.loaderViewStack.content.x = newX + containerWidth/2;
+			app.loaderViewStack.content.y = newY + containerHeight/2;
+		}
+		
+		private function centerSWF():void {
 			var loaderWidth:int = app.loaderViewStack.width;
 			var loaderHeight:int = app.loaderViewStack.height;
 			var contentWidth:int = app.loaderViewStack.content.width;
 			var contentHeight:int = app.loaderViewStack.content.height;
 			app.loaderViewStack.content.x = (loaderWidth - contentWidth)/2;
-			app.loaderViewStack.content.y = (loaderHeight - contentHeight)/2;
+			app.loaderViewStack.content.y = (loaderHeight - contentHeight)/2;			
 		}
 		
 		private function pan(dimension:String, evt:MouseEvent):void {
@@ -218,9 +238,11 @@ package com.slslabs.viewer.view {
 		}		
 		
 		public function set scale(scale:Number):void {
+			var oldHeight:Number = app.loaderViewStack.content.height;
+			var oldWidth:Number = app.loaderViewStack.content.width;
 			app.loaderViewStack.content.scaleX = scale;
 			app.loaderViewStack.content.scaleY = scale;
-			centerSWFContainer();
+			moveFocusRectangle(oldWidth, oldHeight);
 		}
 		
 		/* === Public Accessors === */
