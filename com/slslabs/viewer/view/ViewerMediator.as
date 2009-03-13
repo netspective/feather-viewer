@@ -59,8 +59,8 @@ package com.slslabs.viewer.view {
 			
 			facade.registerMediator( new ViewerToolbarMediator(app.toolbar) );
 			
-			// prevent the view stack from displaying anything until the initial resize and
-			// centering are complete
+			// Prevent the view stack from displaying anything until the initial resize and
+			// centering are complete.
 			app.loaderViewStack.visible = false;
 
 			app.loaderViewStack.addEventListener(Event.INIT, onSWFInit);
@@ -168,18 +168,24 @@ package com.slslabs.viewer.view {
 			var axis:String = dimension == "width" ? "x" : "y";
 			var position:Number = app.loaderViewStack.content[axis];
 			
-			// We want to keep the center of the container over the center of the visible part of the content.
-			// It's therefore necessary to add the distance from the upper left corners of the content and the
-			// container and the distance to the center of the container, and find the ratio of that to the 
-			// original content dimensions.
+			// We want to keep the center of the container over the center of the visible part of the content
+			// from before the zoom happened.
+			// It's therefore necessary to find the ratio of the position of the center of the 
+			// container to the total length of the content in that dimension.
 			// (Subtracting the container dimensions because all the coordinates will be negative.)
 			var posToTotalRatio:Number = (position - containerDimensionTotal/2)/oldDimensionValue;
 
+			// Find the new position of the center, and then find the position of the upper left corner
+			// of the content.
 			var newPosition:Number = posToTotalRatio * contentDimensionTotal + containerDimensionTotal/2;
 			app.loaderViewStack.content[axis] = newPosition;
 		}
 		
 		private function centerContainerOnShrink(oldWidth:Number, oldHeight:Number):void {
+			// If the content fits within the container in a dimension, we want to center it relative to the
+			// container.
+			// Otherwise, we want to move the content so that the same point is in the center as before the zoom,
+			// while making sure that the content stays flush with the borders.
 			if(contentDimensionFitsInContainer("height")) {
 				centerHeightAbsolute();
 			} else {
