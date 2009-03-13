@@ -155,50 +155,42 @@ package com.slslabs.viewer.view {
 			var expanding:Boolean = oldWidth < app.loaderViewStack.content.width;
 				
 			if(expanding) {
-				centerContainerRelativeToSWF(oldWidth, oldHeight);
+				centerContainerRelativeToSWF(oldWidth, "width");
+				centerContainerRelativeToSWF(oldHeight, "height");
 			} else {
 				centerContainerOnShrink(oldWidth, oldHeight);
 			}
 		}
 		
-		private function centerContainerRelativeToSWF(oldWidth:Number, oldHeight:Number):void {
-			trace("ViewerMediator:centerContainerRelativeToSWF");
-			var containerWidth:Number = app.loaderViewStack.width;
-			var containerHeight:Number = app.loaderViewStack.height;
-			var contentWidth:Number = app.loaderViewStack.content.width;
-			var contentHeight:Number = app.loaderViewStack.content.height;
-
+		private function centerContainerRelativeToSWF(oldDimensionValue:Number, dimension:String):void {
+			var containerDimensionTotal:Number = app.loaderViewStack[dimension];
+			var contentDimensionTotal:Number = app.loaderViewStack.content[dimension];
+			var axis:String = dimension == "width" ? "x" : "y";
+			var position:Number = app.loaderViewStack.content[axis];
+			
 			// We want to keep the center of the container over the center of the visible part of the content.
 			// It's therefore necessary to add the distance from the upper left corners of the content and the
 			// container and the distance to the center of the container, and find the ratio of that to the 
 			// original content dimensions.
 			// (Subtracting the container dimensions because all the coordinates will be negative.)
-			var xToWidthRatio:Number = (app.loaderViewStack.content.x - containerWidth/2)/oldWidth;
-			var yToHeightRatio:Number = (app.loaderViewStack.content.y - containerHeight/2)/oldHeight;
+			var posToTotalRatio:Number = (position - containerDimensionTotal/2)/oldDimensionValue;
 
-			var newX:Number = xToWidthRatio * contentWidth + containerWidth/2;
-			var newY:Number = yToHeightRatio * contentHeight + containerHeight/2;
-
-			app.loaderViewStack.content.x = newX;
-			app.loaderViewStack.content.y = newY;			
+			var newPosition:Number = posToTotalRatio * contentDimensionTotal + containerDimensionTotal/2;
+			app.loaderViewStack.content[axis] = newPosition;
 		}
 		
 		private function centerContainerOnShrink(oldWidth:Number, oldHeight:Number):void {
-			var centered:Boolean = false;
-			
 			if(contentDimensionFitsInContainer("height")) {
-				centered = true;
 				centerHeightAbsolute();
-			} 
+			} else {
+				centerContainerRelativeToSWF(oldHeight, "height");
+				snapContentSides("height");
+			}
 			
 			if(contentDimensionFitsInContainer("width")) {
-				centered = true;
 				centerWidthAbsolute();
-			} 
-
-			if(!centered) {
-				centerContainerRelativeToSWF(oldWidth, oldHeight);
-				snapContentSides("height");
+			} else {
+				centerContainerRelativeToSWF(oldWidth, "width");
 				snapContentSides("width");
 			}
 		}
@@ -209,15 +201,16 @@ package com.slslabs.viewer.view {
 			var containerDimension:Number = app.loaderViewStack[dimension];
 			var contentDimension:Number = app.loaderViewStack.content[dimension];
 			if(axisValue > 0) {
+				trace("ViewerMediator:snapContentSides " + dimension);
 				app.loaderViewStack.content[axis] = 0;
 			} 
 			if(axisValue + contentDimension < containerDimension) {
+				trace("ViewerMediator:snapContentSides " + dimension);
 				app.loaderViewStack.content[axis] = containerDimension - contentDimension;
 			}
 		}
 		
 		private function contentDimensionFitsInContainer(dimension:String):Boolean {
-			trace("ViewerMediator:contentDimensionFitsInContainer " + dimension);
 			var containerDimension:Number = app.loaderViewStack[dimension];
 			var contentDimension:Number = app.loaderViewStack.content[dimension];
 			return containerDimension >= contentDimension;
@@ -229,14 +222,14 @@ package com.slslabs.viewer.view {
 		}
 		
 		private function centerHeightAbsolute():void {
-			trace("ViewerMediator:centerHeight");
+			trace("ViewerMediator:centerHeightAbsolute");
 			var loaderHeight:Number = app.loaderViewStack.height;
 			var contentHeight:Number = app.loaderViewStack.content.height;
 			app.loaderViewStack.content.y = (loaderHeight - contentHeight)/2;			
 		}
 		
 		private function centerWidthAbsolute():void {
-			trace("ViewerMediator:centerWidth");
+			trace("ViewerMediator:centerWidthAbsolute");
 			var loaderWidth:Number = app.loaderViewStack.width;	
 			var contentWidth:Number = app.loaderViewStack.content.width;	
 			app.loaderViewStack.content.x = (loaderWidth - contentWidth)/2;	

@@ -24,7 +24,6 @@ package com.slslabs.viewer.controller {
 	public class ZoomCommand extends SimpleCommand {
 	   
 		override public function execute(note:INotification):void {
-			trace("ZoomCommand:execute");
 			var viewerMediator:ViewerMediator = facade.retrieveMediator(ViewerMediator.NAME) as ViewerMediator;
 			var toolbarMediator:ViewerToolbarMediator = facade.retrieveMediator(ViewerToolbarMediator.NAME) as ViewerToolbarMediator;
 
