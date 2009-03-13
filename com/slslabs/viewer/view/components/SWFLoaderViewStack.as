@@ -62,7 +62,7 @@ package com.slslabs.viewer.view.components {
 			container.verticalScrollPolicy = ScrollPolicy.OFF;
 			// this is a hack to get the parent to correctly clip off the content
 			container.height = this.height + 100;
-			container.height = this.width + 100;
+			container.width = this.width + 100;
 
 			var loader:SWFLoader = new SWFLoader();
 			container.addChild(loader);
