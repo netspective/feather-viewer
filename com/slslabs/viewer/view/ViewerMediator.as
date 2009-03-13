@@ -152,29 +152,87 @@ package com.slslabs.viewer.view {
 			if(oldWidth == 0 || oldHeight == 0)
 				return;
 				
-			var containerWidth:int = app.loaderViewStack.width;
-			var containerHeight:int = app.loaderViewStack.height;
-			var contentWidth:int = app.loaderViewStack.content.width;
-			var contentHeight:int = app.loaderViewStack.content.height;
+			var expanding:Boolean = oldWidth < app.loaderViewStack.content.width;
+				
+			if(expanding) {
+				moveFocusRectangleOnExpand(oldWidth, oldHeight);
+			} else {
+				moveFocusRectangleOnShrink();
+			}
+		}
+		
+		private function moveFocusRectangleOnExpand(oldWidth:Number, oldHeight:Number):void {
+			var containerWidth:Number = app.loaderViewStack.width;
+			var containerHeight:Number = app.loaderViewStack.height;
+			var contentWidth:Number = app.loaderViewStack.content.width;
+			var contentHeight:Number = app.loaderViewStack.content.height;
 
 			// We want to keep the center of the container over the center of the visible part of the content.
+			// It's therefore necessary to add the distance from the upper left corners of the content and the
+			// container and the distance to the center of the container, and find the ratio of that to the 
+			// original content dimensions.
+			// (Subtracting the container dimensions because all the coordinates will be negative.)
 			var xToWidthRatio:Number = (app.loaderViewStack.content.x - containerWidth/2)/oldWidth;
 			var yToHeightRatio:Number = (app.loaderViewStack.content.y - containerHeight/2)/oldHeight;
 
-			var newX:Number = xToWidthRatio * contentWidth;
-			var newY:Number = yToHeightRatio * contentHeight;
+			var newX:Number = xToWidthRatio * contentWidth + containerWidth/2;
+			var newY:Number = yToHeightRatio * contentHeight + containerHeight/2;
 
-			app.loaderViewStack.content.x = newX + containerWidth/2;
-			app.loaderViewStack.content.y = newY + containerHeight/2;
+			app.loaderViewStack.content.x = newX;
+			app.loaderViewStack.content.y = newY;			
+		}
+		
+		private function moveFocusRectangleOnShrink():void {
+			if(contentDimensionFitsInContainer("height")) {
+				centerHeight();
+			} else {
+				snapCorners("height");
+			}
+			
+			if(contentDimensionFitsInContainer("width")) {
+				centerWidth();
+			} else {
+				snapCorners("width");
+			}
+		}
+		
+		private function snapCorners(dimension:String):void {
+			var axis:String = dimension == "width" ? "x" : "y";
+			var axisValue:Number = app.loaderViewStack.content[axis];
+			var containerDimension:Number = app.loaderViewStack[dimension];
+			var contentDimension:Number = app.loaderViewStack.content[dimension];
+			if(axisValue > 0) {
+				app.loaderViewStack.content[axis] = 0;
+			} 
+			if(axisValue + contentDimension < containerDimension) {
+				app.loaderViewStack.content[axis] = containerDimension - contentDimension;
+			}
+		}
+		
+		private function contentDimensionFitsInContainer(dimension:String):Boolean {
+			trace("ViewerMediator:contentDimensionFitsInContainer " + dimension);
+			var containerDimension:Number = app.loaderViewStack[dimension];
+			var contentDimension:Number = app.loaderViewStack.content[dimension];
+			return containerDimension >= contentDimension;
 		}
 		
 		private function centerSWF():void {
-			var loaderWidth:int = app.loaderViewStack.width;
-			var loaderHeight:int = app.loaderViewStack.height;
-			var contentWidth:int = app.loaderViewStack.content.width;
-			var contentHeight:int = app.loaderViewStack.content.height;
-			app.loaderViewStack.content.x = (loaderWidth - contentWidth)/2;
+			centerHeight();
+			centerWidth();
+		}
+		
+		private function centerHeight():void {
+			trace("ViewerMediator:centerHeight");
+			var loaderHeight:Number = app.loaderViewStack.height;
+			var contentHeight:Number = app.loaderViewStack.content.height;
 			app.loaderViewStack.content.y = (loaderHeight - contentHeight)/2;			
+		}
+		
+		private function centerWidth():void {
+			trace("ViewerMediator:centerWidth");
+			var loaderWidth:Number = app.loaderViewStack.width;	
+			var contentWidth:Number = app.loaderViewStack.content.width;	
+			app.loaderViewStack.content.x = (loaderWidth - contentWidth)/2;	
 		}
 		
 		private function pan(dimension:String, evt:MouseEvent):void {
