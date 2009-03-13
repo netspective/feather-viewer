@@ -148,7 +148,7 @@ package com.slslabs.viewer.view {
 			sendNotification(ViewerFacade.SCALE_CHANGED, this.scale);
 		}
 		
-		private function moveFocusRectangle(oldWidth:Number, oldHeight:Number):void {
+		private function centerContainer(oldWidth:Number, oldHeight:Number):void {
 			if(oldWidth == 0 || oldHeight == 0)
 				return;
 				
@@ -307,7 +307,7 @@ package com.slslabs.viewer.view {
 			var oldWidth:Number = app.loaderViewStack.content.width;
 			app.loaderViewStack.content.scaleX = scale;
 			app.loaderViewStack.content.scaleY = scale;
-			moveFocusRectangle(oldWidth, oldHeight);
+			centerContainer(oldWidth, oldHeight);
 		}
 		
 		/* === Public Accessors === */
