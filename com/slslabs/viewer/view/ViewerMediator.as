@@ -127,7 +127,7 @@ package com.slslabs.viewer.view {
 				Alert.show("SWFs loaded must be Flash 9 or later.  Flash 8 and earlier SWFs cannot be controlled.", "Incompatible SWF", Alert.OK);
 			}	
 			resizeSWF();	
-			centerSWF();
+			centerSWFAbsolute();
 		}
 		
 		private function countTotalFrames(upToIndex:int=-1):int {
@@ -155,13 +155,14 @@ package com.slslabs.viewer.view {
 			var expanding:Boolean = oldWidth < app.loaderViewStack.content.width;
 				
 			if(expanding) {
-				moveFocusRectangleOnExpand(oldWidth, oldHeight);
+				centerContainerRelativeToSWF(oldWidth, oldHeight);
 			} else {
-				moveFocusRectangleOnShrink();
+				centerContainerOnShrink(oldWidth, oldHeight);
 			}
 		}
 		
-		private function moveFocusRectangleOnExpand(oldWidth:Number, oldHeight:Number):void {
+		private function centerContainerRelativeToSWF(oldWidth:Number, oldHeight:Number):void {
+			trace("ViewerMediator:centerContainerRelativeToSWF");
 			var containerWidth:Number = app.loaderViewStack.width;
 			var containerHeight:Number = app.loaderViewStack.height;
 			var contentWidth:Number = app.loaderViewStack.content.width;
@@ -182,21 +183,27 @@ package com.slslabs.viewer.view {
 			app.loaderViewStack.content.y = newY;			
 		}
 		
-		private function moveFocusRectangleOnShrink():void {
+		private function centerContainerOnShrink(oldWidth:Number, oldHeight:Number):void {
+			var centered:Boolean = false;
+			
 			if(contentDimensionFitsInContainer("height")) {
-				centerHeight();
-			} else {
-				snapCorners("height");
-			}
+				centered = true;
+				centerHeightAbsolute();
+			} 
 			
 			if(contentDimensionFitsInContainer("width")) {
-				centerWidth();
-			} else {
-				snapCorners("width");
+				centered = true;
+				centerWidthAbsolute();
+			} 
+
+			if(!centered) {
+				centerContainerRelativeToSWF(oldWidth, oldHeight);
+				snapContentSides("height");
+				snapContentSides("width");
 			}
 		}
 		
-		private function snapCorners(dimension:String):void {
+		private function snapContentSides(dimension:String):void {
 			var axis:String = dimension == "width" ? "x" : "y";
 			var axisValue:Number = app.loaderViewStack.content[axis];
 			var containerDimension:Number = app.loaderViewStack[dimension];
@@ -216,19 +223,19 @@ package com.slslabs.viewer.view {
 			return containerDimension >= contentDimension;
 		}
 		
-		private function centerSWF():void {
-			centerHeight();
-			centerWidth();
+		private function centerSWFAbsolute():void {
+			centerHeightAbsolute();
+			centerWidthAbsolute();
 		}
 		
-		private function centerHeight():void {
+		private function centerHeightAbsolute():void {
 			trace("ViewerMediator:centerHeight");
 			var loaderHeight:Number = app.loaderViewStack.height;
 			var contentHeight:Number = app.loaderViewStack.content.height;
 			app.loaderViewStack.content.y = (loaderHeight - contentHeight)/2;			
 		}
 		
-		private function centerWidth():void {
+		private function centerWidthAbsolute():void {
 			trace("ViewerMediator:centerWidth");
 			var loaderWidth:Number = app.loaderViewStack.width;	
 			var contentWidth:Number = app.loaderViewStack.content.width;	
