@@ -36,6 +36,8 @@ package com.slslabs.viewer {
 		
 		public static const ENABLE_BACK_BTN:String = "enableBackBtn";		
 		
+		public static const FIT_CONTENT:String = "fitContent";
+		
 
 		/* === Variables === */
 		

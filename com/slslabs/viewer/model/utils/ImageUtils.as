@@ -42,6 +42,26 @@ package com.slslabs.viewer.model.utils {
 			return 1.0;
 		}
 		
+		/**
+		 * Determines the scale factor necessary to shrink or expand the <code>content</code> so that it fills
+		 * the <code>rectangle</code>.
+		 * 
+		 * @param bounds Rectangle that specifies width / height dimensions into which <code>content</code> needs to fit
+		 * @param content object that must fit within the width / height dimensions of <code>bounds</code>
+		 * @return factor to scale <code>content</code> by to fit within the dimensions of <code>bounds</code>
+		 */		
+		public static function fitToBounds(bounds:Rectangle, content:DisplayObject):Number {
+			if(content.width > bounds.width || content.height > bounds.height) {
+				return (content.width / bounds.width > content.height / bounds.height)
+							? bounds.width  / content.width
+							: bounds.height / content.height;
+			} else {
+				return (bounds.width / content.width < bounds.height / content.height)
+							? bounds.width  / content.width
+							: bounds.height / content.height;				
+			}			
+		}
+		
 		/* === Functions === */
 
 	}

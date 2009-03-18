@@ -4,19 +4,14 @@ package com.slslabs.viewer.view {
 	import com.slslabs.viewer.model.utils.ImageUtils;
 	
 	import flash.display.AVM1Movie;
-	import flash.display.LoaderInfo;
 	import flash.display.MovieClip;
-	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
 	
-	import mx.containers.Canvas;
 	import mx.controls.Alert;
 	import mx.controls.SWFLoader;
-	import mx.events.ResizeEvent;
 	
-	import org.puremvc.as3.core.View;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
@@ -77,12 +72,16 @@ package com.slslabs.viewer.view {
 					sendNotification(ViewerFacade.UPDATE_PAGES,
 						{currentPage: getCurrentFrame(), totalPages: countTotalFrames()});
 					break;
+				case ViewerFacade.FIT_CONTENT:
+					fitContent();
+					break;	
 			}
 		}
 
 		override public function listNotificationInterests():Array {
 			return [
-				ViewerFacade.CHANGE_PAGE
+				ViewerFacade.CHANGE_PAGE, 
+				ViewerFacade.FIT_CONTENT
 			];
 		}
 				
@@ -156,6 +155,12 @@ package com.slslabs.viewer.view {
 			trace("ViewerMediator:onLoaderContentComplete scale==" + scale);
 			this.scale *= scale;
 			sendNotification(ViewerFacade.SCALE_CHANGED, this.scale);
+		}
+		
+		private function fitContent():void {
+			var scale:Number = ImageUtils.fitToBounds(getSWFLoaderRectangle(), app.loaderViewStack.content);
+			this.scale *= scale;
+			sendNotification(ViewerFacade.SCALE_CHANGED, this.scale);			
 		}
 		
 		private function centerContainer(oldWidth:Number, oldHeight:Number):void {

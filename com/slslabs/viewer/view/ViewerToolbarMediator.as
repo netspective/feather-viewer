@@ -4,6 +4,7 @@ package com.slslabs.viewer.view {
 	import com.slslabs.viewer.model.utils.ScaleUtils;
 	import com.slslabs.viewer.view.components.ViewerToolbar;
 	
+	import flash.events.Event;
 	import flash.events.FocusEvent;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
@@ -51,6 +52,7 @@ package com.slslabs.viewer.view {
 					highlightScaleText();
 				});
 			view.scaleTI.addEventListener(KeyboardEvent.KEY_DOWN, onScaleChange);
+			view.fitContentBtn.addEventListener(MouseEvent.CLICK, onFitContentBtnClick);
 			
 			numberFormatter = new NumberFormatter();
 			numberFormatter.precision = 0;
@@ -120,6 +122,10 @@ package com.slslabs.viewer.view {
 				sendNotification(ViewerFacade.SCALE_CHANGED, view.scaleTI.text);
 			else if(evt.charCode == Keyboard.ESCAPE)
 				sendNotification(ViewerFacade.SCALE_CHANGED, "");
+		}
+		
+		private function onFitContentBtnClick(evt:Event):void {
+			sendNotification(ViewerFacade.FIT_CONTENT);
 		}
 		
 		/* === Event Handlers === */
