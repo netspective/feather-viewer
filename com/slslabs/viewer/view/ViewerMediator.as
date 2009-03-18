@@ -99,8 +99,16 @@ package com.slslabs.viewer.view {
 				app.loaderViewStack.selectedIndex += goForward ? 1 : -1;
 				openNewSWF(goForward);
 			}
+			enableNavBtns();
 		}
 		
+		private function enableNavBtns():void {
+			var enableBackBtn:Boolean = getCurrentFrame() > 1;
+			var enableFwdBtn:Boolean = getCurrentFrame() < countTotalFrames();
+			sendNotification(ViewerFacade.ENABLE_BACK_BTN, enableBackBtn);
+			sendNotification(ViewerFacade.ENABLE_FORWARD_BTN, enableFwdBtn);
+		}		
+
 		private function hasOtherMovie(goForward:Boolean):Boolean {
 			return (goForward && app.loaderViewStack.selectedIndex + 1 < app.loaderViewStack.swfLoaders.length)
 				|| (!goForward && app.loaderViewStack.selectedIndex > 0);
@@ -112,6 +120,7 @@ package com.slslabs.viewer.view {
 			return (goForward && swfAsMovieClip.currentFrame < swfAsMovieClip.totalFrames)
 				|| (!goForward && swfAsMovieClip.currentFrame > 1);
 		}
+		
 		
 		private function getSWFLoaderRectangle():Rectangle {
 			return new Rectangle(0, 0, app.loaderViewStack.width, app.loaderViewStack.height); 
@@ -128,6 +137,7 @@ package com.slslabs.viewer.view {
 			}	
 			resizeSWF();	
 			centerSWFAbsolute();
+			enableNavBtns();
 		}
 		
 		private function countTotalFrames(upToIndex:int=-1):int {

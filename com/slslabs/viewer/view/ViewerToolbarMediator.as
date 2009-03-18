@@ -1,14 +1,15 @@
 package com.slslabs.viewer.view {
 	
 	import com.slslabs.viewer.ViewerFacade;
+	import com.slslabs.viewer.model.utils.ScaleUtils;
 	import com.slslabs.viewer.view.components.ViewerToolbar;
 	
-	import flash.events.Event;
 	import flash.events.FocusEvent;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.ui.Keyboard;
 	
+	import mx.controls.Button;
 	import mx.events.ItemClickEvent;
 	import mx.formatters.NumberFormatter;
 	
@@ -81,6 +82,22 @@ package com.slslabs.viewer.view {
 			view.pagesLbl.text = currentPage + "/" + totalPages;
 		}
 		
+		public function ensableForwardBtn(enabled:Boolean):void {
+			view.fwdBtn.enabled = enabled;
+		}
+		
+		public function enableBackBtn(enabled:Boolean):void {
+			view.backBtn.enabled = enabled;
+		}
+		
+		private function enableZoomBtns(scale:Number):void {
+			// There's no other way to access individual buttons in a button bar than to
+			// get them by child index. Assume that the first button is the zoom out 
+			// button, and the second is the zoom in button.
+			Button(view.zoomBar.getChildAt(0)).enabled = scale > ScaleUtils.MIN_SCALE;
+			Button(view.zoomBar.getChildAt(1)).enabled = scale < ScaleUtils.MAX_SCALE;
+		}
+		
 		/* === Functions === */
 		
 		/* --- Event Handlers --- */
@@ -114,6 +131,7 @@ package com.slslabs.viewer.view {
 		public function set scale(scale:Number):void {
 			view.scaleTI.text = numberFormatter.format(scale*100) + "%";
 			highlightScaleText();
+			enableZoomBtns(scale);
 		}
 		
 		/* === Public Accessors === */

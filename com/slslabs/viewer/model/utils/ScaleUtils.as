@@ -47,6 +47,17 @@ package com.slslabs.viewer.model.utils {
 			return scale;
 		}
 		
+		public static function parseScale(value:Object):Number {
+			if(value is Number)
+				return value as Number;
+			if(value is String) {
+				var scale:String = value as String;
+				scale = scale.replace("%", '');
+				return parseInt(scale) / 100;
+			}
+			return parseInt("");
+		}
+		
 		/* === Functions === */
 
 	}

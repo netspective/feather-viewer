@@ -23,23 +23,12 @@ package com.slslabs.viewer.controller {
 			var viewerMediator:ViewerMediator = facade.retrieveMediator(ViewerMediator.NAME) as ViewerMediator;
 			var toolbarMediator:ViewerToolbarMediator = facade.retrieveMediator(ViewerToolbarMediator.NAME) as ViewerToolbarMediator;
 	
-			var scale:Number = parseScale( note.getBody() );
+			var scale:Number = ScaleUtils.parseScale( note.getBody() );
 			
 			if( !isNaN(scale) ) {
 				viewerMediator.scale = ScaleUtils.clipValue(scale);
 			}
 			toolbarMediator.scale = viewerMediator.scale;
-		}
-		
-		private function parseScale(value:Object):Number {
-			if(value is Number)
-				return value as Number;
-			if(value is String) {
-				var scale:String = value as String;
-				scale = scale.replace("%", '');
-				return parseInt(scale) / 100;
-			}
-			return parseInt("");
 		}
 		
 	}

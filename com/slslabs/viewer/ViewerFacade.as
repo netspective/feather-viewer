@@ -32,6 +32,10 @@ package com.slslabs.viewer {
 		
 		public static const SCALE_CHANGED:String = "scaleChanged";
 		
+		public static const ENABLE_FORWARD_BTN:String = "enableForwardBtn";
+		
+		public static const ENABLE_BACK_BTN:String = "enableBackBtn";		
+		
 
 		/* === Variables === */
 		
@@ -59,6 +63,8 @@ package com.slslabs.viewer {
 	        registerCommand(ZOOM_IN, ZoomCommand);
 	        registerCommand(ZOOM_OUT, ZoomCommand);
 	        registerCommand(SCALE_CHANGED, ScaleChangedCommand);
+	        registerCommand(ENABLE_BACK_BTN, EnableNavigationButtonCommand);
+	        registerCommand(ENABLE_FORWARD_BTN, EnableNavigationButtonCommand);	        
 		}
 		
 		/* === Functions === */
