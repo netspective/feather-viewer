@@ -1,4 +1,4 @@
-package com.slslabs.viewer.controller {
+package com.netspective.viewer.controller {
 	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.command.MacroCommand;

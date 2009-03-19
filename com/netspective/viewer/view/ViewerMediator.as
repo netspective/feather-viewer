@@ -1,7 +1,7 @@
-package com.slslabs.viewer.view {
+package com.netspective.viewer.view {
 	
-	import com.slslabs.viewer.ViewerFacade;
-	import com.slslabs.viewer.model.utils.ImageUtils;
+	import com.netspective.viewer.ViewerFacade;
+	import com.netspective.viewer.model.utils.ImageUtils;
 	
 	import flash.display.AVM1Movie;
 	import flash.display.MovieClip;
@@ -308,7 +308,7 @@ package com.slslabs.viewer.view {
 		
 		/* --- Public Accessors --- */
 		
-		public function get app():PDFViewer { return viewComponent as PDFViewer; }
+		public function get app():FeatherViewer { return viewComponent as FeatherViewer; }
 		
 		public function get swfAsMovieClip():MovieClip { return app.loaderViewStack.content as MovieClip; }
 		

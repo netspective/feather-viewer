@@ -1,9 +1,9 @@
-package com.slslabs.viewer.controller {
+package com.netspective.viewer.controller {
 
 	//pmvcgen:insert imports
 	
-	import com.slslabs.viewer.ViewerFacade;
-	import com.slslabs.viewer.view.ViewerToolbarMediator;
+	import com.netspective.viewer.ViewerFacade;
+	import com.netspective.viewer.view.ViewerToolbarMediator;
 	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.command.SimpleCommand;

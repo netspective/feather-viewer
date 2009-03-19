@@ -1,4 +1,4 @@
-package com.slslabs.viewer.view.components {
+package com.netspective.viewer.view.components {
 	import flash.display.DisplayObject;
 	import flash.events.Event;
 	

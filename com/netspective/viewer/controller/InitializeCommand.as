@@ -1,6 +1,6 @@
-package com.slslabs.viewer.controller {
+package com.netspective.viewer.controller {
 	
-	import com.slslabs.viewer.model.ViewerProxy;
+	import com.netspective.viewer.model.ViewerProxy;
 	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.command.SimpleCommand;

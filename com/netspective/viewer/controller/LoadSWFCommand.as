@@ -1,6 +1,6 @@
-package com.slslabs.viewer.controller {
+package com.netspective.viewer.controller {
 	
-	import com.slslabs.viewer.model.ViewerProxy;
+	import com.netspective.viewer.model.ViewerProxy;
 	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.command.SimpleCommand;
@@ -16,7 +16,7 @@ package com.slslabs.viewer.controller {
 	public class LoadSWFCommand extends SimpleCommand {
 	   
 		override public function execute(note:INotification):void {
-			var app:PDFViewer = note.getBody() as PDFViewer;
+			var app:FeatherViewer = note.getBody() as FeatherViewer;
 			var viewerProxy:ViewerProxy = facade.retrieveProxy(ViewerProxy.NAME) as ViewerProxy;
 			
 			if(viewerProxy.swfPaths) {

@@ -1,4 +1,4 @@
-package com.slslabs.viewer.model.utils {
+package com.netspective.viewer.model.utils {
 	
 	/**
 	 * Scale related utility functions.

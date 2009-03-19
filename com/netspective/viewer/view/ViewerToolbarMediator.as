@@ -1,8 +1,8 @@
-package com.slslabs.viewer.view {
+package com.netspective.viewer.view {
 	
-	import com.slslabs.viewer.ViewerFacade;
-	import com.slslabs.viewer.model.utils.ScaleUtils;
-	import com.slslabs.viewer.view.components.ViewerToolbar;
+	import com.netspective.viewer.ViewerFacade;
+	import com.netspective.viewer.model.utils.ScaleUtils;
+	import com.netspective.viewer.view.components.ViewerToolbar;
 	
 	import flash.events.Event;
 	import flash.events.FocusEvent;

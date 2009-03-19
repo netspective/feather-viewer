@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
-                xmlns:components="com.slslabs.viewer.view.components.*"
+                xmlns:components="com.netspective.viewer.view.components.*"
                 creationComplete="facade.startup(this)">
 
 	<mx:Script>
 		<![CDATA[
-			import com.slslabs.viewer.ViewerFacade;
+			import com.netspective.viewer.ViewerFacade;
 
 			private var facade:ViewerFacade = ViewerFacade.getInstance();
 		]]>

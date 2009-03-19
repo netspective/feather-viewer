@@ -1,11 +1,11 @@
-package com.slslabs.viewer.controller {
+package com.netspective.viewer.controller {
 
 	//pmvcgen:insert imports
 	
-	import com.slslabs.viewer.ViewerFacade;
-	import com.slslabs.viewer.model.utils.ScaleUtils;
-	import com.slslabs.viewer.view.ViewerMediator;
-	import com.slslabs.viewer.view.ViewerToolbarMediator;
+	import com.netspective.viewer.ViewerFacade;
+	import com.netspective.viewer.model.utils.ScaleUtils;
+	import com.netspective.viewer.view.ViewerMediator;
+	import com.netspective.viewer.view.ViewerToolbarMediator;
 	
 	import flash.utils.Dictionary;
 	

@@ -10,7 +10,7 @@
 	
 	<mx:TextInput id="scaleTI" width="56" height="27" />
 	
-	<mx:Button id="fitContentBtn" width="28" height="27" />
+	<mx:Button id="fitContentBtn" styleName="fitBtn" width="48" height="27" label="Fit" />
 
 	<mx:Spacer width="5" />
 	

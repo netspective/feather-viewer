@@ -1,6 +1,6 @@
-package com.slslabs.viewer {
+package com.netspective.viewer {
 	
-	import com.slslabs.viewer.controller.*;
+	import com.netspective.viewer.controller.*;
 	
 	import org.puremvc.as3.patterns.facade.Facade;
 	
@@ -50,11 +50,11 @@ package com.slslabs.viewer {
 		}
 		
 		/**
-		 * Starts up PDFViewer.
+		 * Starts up FeatherViewer.
 		 *
 		 * @param app reference to the application
 		 */
-		public function startup(app:PDFViewer):void {
+		public function startup(app:FeatherViewer):void {
 			sendNotification(STARTUP, app);
 		}
 		

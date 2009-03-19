@@ -1,6 +1,6 @@
-package com.slslabs.viewer.model {
+package com.netspective.viewer.model {
 	
-	import com.slslabs.viewer.ViewerFacade;
+	import com.netspective.viewer.ViewerFacade;
 	
 	import org.puremvc.as3.patterns.proxy.Proxy;
 	
